@@ -11,6 +11,8 @@ var moment = require('moment');
 
 var iot_uuid, user_uuid;
 
+var counter_limit = 15;
+
 io.on('connection', function(socket){
 
   /* Emitting welcome message when has some client connected */
@@ -73,6 +75,13 @@ io.on('connection', function(socket){
           console.log('RECORED count of ' + splited_arr[0]);
         });
 
+    /* Check over limit counter */
+    if(Number(splited_arr[1]) == counter_limit){
+	msg.html = '<p>Counter over limit of ' + String(splited_arr[0]) + ' : ' + String(splited_arr[1] + ' times');
+	console.log('Sent alert mail !');    	
+	sendmail();
+    }
+
   });
 
   socket.on('cmd', function(cmd){
@@ -99,3 +108,28 @@ io.on('connection', function(socket){
 server.listen(port, function(){
   console.log('socket protocol running on port ' + port);
 });
+
+//----------------- Mail API zone --------------------------
+
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey('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');
+
+const msg = {
+  to: ['rapitchsan@gmail.com','polsan.rapitch@gmail.com'],
+  from: 'rapitchpolsan@hotmail.com', // Use the email address or domain you verified above
+  subject: 'Alert counter over - IoT molding system',
+  html: '',
+};
+
+function sendmail(){
+sgMail
+  .send(msg)
+  .then(() => {}, error => {
+    console.error(error);
+
+    if (error.response) {
+      console.error(error.response.body)
+    }
+});
+}
