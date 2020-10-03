@@ -113,7 +113,7 @@ server.listen(port, function(){
 
 const sgMail = require('@sendgrid/mail');
 
-sgMail.setApiKey('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');
+sgMail.setApiKey('YOUR-API-KEY');
 
 const msg = {
   to: ['rapitchsan@gmail.com','polsan.rapitch@gmail.com'],
